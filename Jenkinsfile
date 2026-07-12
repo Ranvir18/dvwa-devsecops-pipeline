@@ -22,16 +22,19 @@ pipeline {
         }
 
         stage('Trivy Filesystem Scan') {
-            steps {
-                sh '''
-                    /usr/bin/trivy fs \
-                    --severity HIGH,CRITICAL \
-                    --format table \
-                    -o trivy-report.txt \
-                    .
-                '''
-            }
-        }
+    steps {
+        sh '''
+            export LANG=en_US.UTF-8
+            export LC_ALL=en_US.UTF-8
+
+            /usr/bin/trivy fs \
+            --severity HIGH,CRITICAL \
+            --format table \
+            -o trivy-report.txt \
+            .
+        '''
+    }
+}
     }
 
     post {
