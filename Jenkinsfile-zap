@@ -1,1 +1,55 @@
+pipeline {
+    agent any
 
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Start DVWA') {
+            steps {
+                sh '''
+                docker compose up -d
+                sleep 20
+                '''
+            }
+        }
+
+        stage('OWASP ZAP Baseline Scan') {
+            steps {
+                sh '''
+                mkdir -p zap-report
+
+                docker run --rm \
+                  --network host \
+                  -v $WORKSPACE/zap-report:/zap/wrk \
+                  ghcr.io/zaproxy/zaproxy:stable \
+                  zap-baseline.py \
+                  -t http://127.0.0.1:4280 \
+                  -r report.html
+                '''
+            }
+        }
+
+        stage('Stop DVWA') {
+            steps {
+                sh 'docker compose down'
+            }
+        }
+    }
+
+    post {
+        always {
+            publishHTML(target: [
+                allowMissing: true,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'zap-report',
+                reportFiles: 'report.html',
+                reportName: 'OWASP ZAP Report'
+            ])
+        }
+    }
+}
