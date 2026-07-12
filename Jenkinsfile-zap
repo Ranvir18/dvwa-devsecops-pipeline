@@ -8,15 +8,6 @@ pipeline {
             }
         }
 
-        stage('Start DVWA') {
-            steps {
-                sh '''
-                docker compose up -d
-                sleep 20
-                '''
-            }
-        }
-
         stage('OWASP ZAP Baseline Scan') {
             steps {
                 sh '''
@@ -30,12 +21,6 @@ pipeline {
                   -t http://127.0.0.1:4280 \
                   -r report.html
                 '''
-            }
-        }
-
-        stage('Stop DVWA') {
-            steps {
-                sh 'docker compose down'
             }
         }
     }
