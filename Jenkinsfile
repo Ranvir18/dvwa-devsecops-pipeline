@@ -98,12 +98,15 @@ pipeline {
 <h2>DevSecOps Security Scan Report</h2>
 
 <p>Hello Team,</p>
-
 <p>
-The automated security assessment has completed successfully.
-Below is the SonarQube analysis summary.
-The detailed Trivy vulnerability report is attached.
+The automated DevSecOps security assessment has completed successfully through the Jenkins pipeline.
 </p>
+
+<ul>
+    <li><b>SonarQube Analysis:</b> Completed successfully. A summary of the code quality and security metrics is provided below.</li>
+
+    <li><b>Trivy Filesystem Scan:</b> Completed successfully. The project was scanned for <b>HIGH</b> and <b>CRITICAL</b> severity vulnerabilities, and the detailed Trivy scan report is attached for your review.</li>
+</ul>
 
 <hr>
 
