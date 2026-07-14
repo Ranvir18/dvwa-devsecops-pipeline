@@ -38,15 +38,75 @@ pipeline {
     }
 
     post {
-        always {
-            publishHTML(target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'zap-report',
-                reportFiles: 'report.html',
-                reportName: 'OWASP ZAP Report'
-            ])
-        }
+    always {
+
+        publishHTML(target: [
+            allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'zap-report',
+            reportFiles: 'report.html',
+            reportName: 'OWASP ZAP Report'
+        ])
+
+        emailext(
+
+            to: "ranvirsh05@gmail.com",
+
+            subject: "[DevSecOps] OWASP ZAP Scan Report | ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+
+            mimeType: 'text/html',
+
+            attachmentsPattern: 'zap-report/report.html',
+
+            body: """
+<html>
+
+<body style="font-family:Arial">
+
+<h2>DevSecOps OWASP ZAP Scan Report</h2>
+
+<p>Hello Team,</p>
+
+<p>
+The automated OWASP ZAP Dynamic Application Security Testing (DAST)
+scan has completed successfully.
+</p>
+
+<hr>
+
+<h3>Build Details</h3>
+
+<ul>
+<li><b>Project:</b> ${env.JOB_NAME}</li>
+<li><b>Build Number:</b> ${env.BUILD_NUMBER}</li>
+<li><b>Status:</b> ${currentBuild.currentResult}</li>
+</ul>
+
+<hr>
+
+<h3>OWASP ZAP Scan</h3>
+
+<p>
+The OWASP ZAP baseline scan has completed successfully.
+</p>
+
+<p>
+The detailed HTML security report has been attached to this email.
+Please review all identified alerts before deployment.
+</p>
+
+<br>
+
+Regards,<br>
+
+<b>DevSecOps Team</b>
+
+</body>
+
+</html>
+"""
+        )
     }
+}
 }
